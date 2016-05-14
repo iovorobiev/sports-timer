@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">Sports Counter</string>
+    <string name="separator">:</string>
+    <string name="start">start</string>
+    <string name="clear">clear</string>
+    <string name="chose_minutes">Choose minutes</string>
+    <string name="choose_seconds">Choose seconds</string>
+    <string name="ok">OK</string>
+    <string name="dig_only">Time should be digits only</string>
+    <string name="stop">stop</string>
+</resources>

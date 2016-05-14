@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="counters"
+            type="com.ideas.sportscounter.viewmodel.CountersViewModel" />
+        <variable
+            name="timepicker"
+            type="com.ideas.sportscounter.TimePicker" />
+    </data>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingBottom="@dimen/activity_vertical_margin"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin"
+        tools:context="com.ideas.sportscounter.MainActivity">
+
+        <RelativeLayout
+            android:id="@+id/mainContainer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true">
+
+            <LinearLayout
+                android:id="@+id/timerContainer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/timerMinutes"
+                    style="@style/MainText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@{counters.minutes}"
+                    android:onClick="@{timepicker.pickTime}"
+                    tools:text="04" />
+
+                <TextView
+                    android:id="@+id/minSeparator"
+                    style="@style/MainText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/separator" />
+
+                <TextView
+                    android:id="@+id/timerSeconds"
+                    style="@style/MainText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="@{timepicker.pickTime}"
+                    android:text="@{counters.seconds}"
+                    tools:text="04" />
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/setCounter"
+                style="@style/MainText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/timerContainer"
+                android:layout_centerHorizontal="true"
+                android:text="@{counters.setNumber}"
+                tools:text="0" />
+
+        </RelativeLayout>
+
+        <Button
+            android:id="@+id/start"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/mainContainer"
+            android:layout_centerHorizontal="true"
+            android:text="@string/start" />
+
+        <Button
+            android:id="@+id/clear"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerHorizontal="true"
+            android:text="@string/clear" />
+
+    </RelativeLayout>
+</layout>
