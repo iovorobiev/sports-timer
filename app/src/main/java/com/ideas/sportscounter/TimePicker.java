@@ -12,20 +12,19 @@ import android.widget.Toast;
 
 import com.ideas.sportscounter.viewmodel.CountersViewModel;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
 
-public class TimePicker implements ITimePicker{
-//    @Inject
+public class TimePicker {
+    @Inject
     CountersViewModel model;
-    //TODO: make DI here
-    public TimePicker(CountersViewModel model) {
-        this.model = model;
+
+    @Inject
+    public TimePicker() {
+        //Do nothing
     }
 
-    public void pickTime(View view) {
-        pickTime(view.getContext(), view.getId() == R.id.timerMinutes);
-    }
-
-    public void pickTime(final Context context, final boolean isMinutes) {
+    void pickTime(final Context context, final boolean isMinutes) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         final View pickView = LayoutInflater.from(context).inflate(R.layout.time_chooser, null);
         builder.setView(pickView);
@@ -50,7 +49,6 @@ public class TimePicker implements ITimePicker{
                 }
                 if (!TextUtils.isDigitsOnly(result)) {
                     Toast.makeText(context, R.string.dig_only, Toast.LENGTH_LONG).show();
-
                     return;
                 }
                 int resultTime = Integer.parseInt(result);
@@ -63,15 +61,5 @@ public class TimePicker implements ITimePicker{
                 dialog.dismiss();
             }
         });
-    }
-
-    @Override
-    public void pickMinutes(Context context) {
-        pickTime(context, true);
-    }
-
-    @Override
-    public void pickSeconds(Context context) {
-        pickTime(context, false);
     }
 }

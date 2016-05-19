@@ -5,12 +5,14 @@ import android.databinding.Bindable;
 
 import com.ideas.sportscounter.BR;
 
-//import javax.inject.Singleton;
+import javax.inject.Inject;
 
-//@Singleton
+import javax.inject.Singleton;
+
+@Singleton
 public class CountersViewModel extends BaseObservable {
-    public static final int MAX_VALUE = 99;
-    public static final int SECONDS_IN_MINUTE = 60;
+    private static final int MAX_VALUE = 99;
+    private static final int SECONDS_IN_MINUTE = 60;
     public static final int MILLIS_IN_SECOND = 1000;
     private int stateMinutes;
     private int stateSeconds;
@@ -62,7 +64,7 @@ public class CountersViewModel extends BaseObservable {
     }
 
     public void setMillis(long millis) {
-        minutes = 0;
+        setMinutes(0);
         setSeconds((int) (millis / MILLIS_IN_SECOND));
     }
 

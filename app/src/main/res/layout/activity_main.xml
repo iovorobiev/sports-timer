@@ -1,15 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools">
+        xmlns:tools="http://schemas.android.com/tools"
+        xmlns:bind="http://schemas.android.com/apk/res-auto"
+        xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-
         <variable
             name="counters"
             type="com.ideas.sportscounter.viewmodel.CountersViewModel" />
         <variable
             name="timepicker"
             type="com.ideas.sportscounter.TimePicker" />
+        <import type="com.ideas.sportscounter.BindingsAdapters.TimeType"/>
     </data>
 
     <RelativeLayout
@@ -39,7 +41,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@{counters.minutes}"
-                    android:onClick="@{timepicker.pickTime}"
+                    bind:type="@{TimeType.MINUTE}"
                     tools:text="04" />
 
                 <TextView
@@ -54,7 +56,7 @@
                     style="@style/MainText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:onClick="@{timepicker.pickTime}"
+                    bind:type="@{TimeType.SECOND}"
                     android:text="@{counters.seconds}"
                     tools:text="04" />
 
@@ -69,24 +71,28 @@
                 android:layout_centerHorizontal="true"
                 android:text="@{counters.setNumber}"
                 tools:text="0" />
-
+            <Button
+                android:id="@+id/start"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/setCounter"
+                android:layout_centerHorizontal="true"
+                style="@style/Widget.AppCompat.Button.Borderless.Colored"
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="48sp"
+                android:text="@string/start" />
         </RelativeLayout>
 
-        <Button
-            android:id="@+id/start"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/mainContainer"
-            android:layout_centerHorizontal="true"
-            android:text="@string/start" />
 
-        <Button
+
+        <ImageButton
             android:id="@+id/clear"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_centerHorizontal="true"
-            android:text="@string/clear" />
+            android:background="@null"
+            app:srcCompat="@drawable/ic_close_black_24dp" />
 
     </RelativeLayout>
 </layout>

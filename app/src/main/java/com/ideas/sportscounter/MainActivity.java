@@ -6,31 +6,37 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.ideas.sportscounter.databinding.ActivityMainBinding;
+import com.ideas.sportscounter.di.Injector;
 import com.ideas.sportscounter.viewmodel.CountersViewModel;
+
+import javax.inject.Inject;
 
 public class MainActivity extends AppCompatActivity {
 
     private Button start;
-    private Button clear;
+    private ImageButton clear;
     private TextView minutes;
     private TextView seconds;
     private boolean setsBlocked;
 
     private CountdownTimerZero timer;
-    private CountersViewModel countersViewModel = new CountersViewModel();
-    private TimePicker timePicker = new TimePicker(countersViewModel);
+
+    @Inject
+    CountersViewModel countersViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Injector.perApp(this).inject(this);
         ActivityMainBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         binding.setCounters(countersViewModel);
-        binding.setTimepicker(timePicker);
+//        binding.setTimepicker(timePicker);
         start = (Button) findViewById(R.id.start);
-        clear = (Button) findViewById(R.id.clear);
+        clear = (ImageButton) findViewById(R.id.clear);
         minutes = (TextView) findViewById(R.id.timerMinutes);
         seconds = (TextView) findViewById(R.id.timerSeconds);
         //TODO: move to databindings
