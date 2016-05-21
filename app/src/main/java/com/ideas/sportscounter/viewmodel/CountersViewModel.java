@@ -2,18 +2,12 @@ package com.ideas.sportscounter.viewmodel;
 
 import android.databinding.BaseObservable;
 import android.databinding.Bindable;
-
 import com.ideas.sportscounter.BR;
 
-import javax.inject.Inject;
-
-import javax.inject.Singleton;
-
-@Singleton
 public class CountersViewModel extends BaseObservable {
     private static final int MAX_VALUE = 99;
     private static final int SECONDS_IN_MINUTE = 60;
-    public static final int MILLIS_IN_SECOND = 1000;
+    static final float MILLIS_IN_SECOND = 1000;
     private int stateMinutes;
     private int stateSeconds;
     private int minutes;
@@ -45,7 +39,7 @@ public class CountersViewModel extends BaseObservable {
         return Integer.toString(setNumber);
     }
 
-    public void setMinutes(int minutes) {
+    private void setMinutes(int minutes) {
         if (minutes <= MAX_VALUE) {
             this.minutes = minutes;
         } else {
@@ -54,7 +48,7 @@ public class CountersViewModel extends BaseObservable {
         notifyPropertyChanged(BR.minutes);
     }
 
-    public void setSeconds(int seconds) {
+    private void setSeconds(int seconds) {
         this.seconds = seconds % SECONDS_IN_MINUTE;
         notifyPropertyChanged(BR.seconds);
         if (seconds >= SECONDS_IN_MINUTE) {
@@ -63,34 +57,44 @@ public class CountersViewModel extends BaseObservable {
         }
     }
 
-    public void setMillis(long millis) {
+    void setMillis(long millis) {
         setMinutes(0);
-        setSeconds((int) (millis / MILLIS_IN_SECOND));
+        setSeconds(Math.round(millis / MILLIS_IN_SECOND) - 1);
     }
 
-    public long getMillis() {
-        return (minutes * SECONDS_IN_MINUTE + seconds) * MILLIS_IN_SECOND;
+    long getMillis() {
+        return (long) ((minutes * SECONDS_IN_MINUTE + seconds) * MILLIS_IN_SECOND);
     }
 
-    public void setSetNumber(int setNumber) {
+    void setSetNumber(int setNumber) {
         this.setNumber = setNumber;
         notifyPropertyChanged(BR.setNumber);
     }
 
-    public void incSetNumber() {
+    void incSetNumber() {
         setNumber++;
         notifyPropertyChanged(BR.setNumber);
     }
 
-    public void saveState() {
+    private void saveState() {
         stateMinutes = minutes;
         stateSeconds = seconds;
     }
 
-    public void restorePrevious() {
+    void restorePrevious() {
         minutes = stateMinutes;
         seconds = stateSeconds;
         notifyPropertyChanged(BR.minutes);
         notifyPropertyChanged(BR.seconds);
+    }
+
+    public void onSecondsChosed(int time) {
+        setSeconds(time);
+        saveState();
+    }
+
+    public void onMinutesChosed(int time) {
+        setMinutes(time);
+        saveState();
     }
 }

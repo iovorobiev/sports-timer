@@ -1,22 +1,33 @@
 package com.ideas.sportscounter;
 
 import android.databinding.BindingAdapter;
+import android.support.annotation.StringRes;
 import android.view.View;
-
-import com.ideas.sportscounter.di.Injector;
 
 public class BindingsAdapters {
 
-    @BindingAdapter(value = {"type"})
-    public static void pickTime(final View view, final TimeType type) {
-        final TimePicker picker = Injector.perApp(view.getContext()).timePicker();
+    @BindingAdapter(value = {"onTimeChosed", "popupText"})
+    public static void pickTime(final View view, final TimePicker.OnTimeChosedListener listener,
+                                @StringRes final int popupText) {
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                picker.pickTime(v.getContext(), type == TimeType.MINUTE);
+                TimePicker.pickTime(v.getContext(), popupText, listener);
             }
         });
     }
 
-    public enum TimeType {MINUTE, SECOND};
+    @BindingAdapter("onClick")
+    public static void onClick(View view, final OnEmptyArgumentListener listener){
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listener.callAction();
+            }
+        });
+    }
+
+    public interface OnEmptyArgumentListener {
+        void callAction();
+    }
 }
