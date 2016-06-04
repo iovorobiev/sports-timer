@@ -8,4 +8,15 @@
     <string name="ok">OK</string>
     <string name="dig_only">Time should be digits only</string>
     <string name="stop">stop</string>
+    <string name="go">go</string>
+    <string name="voice">Voice</string>
+    <string name="vibro">Vibration</string>
+    <string name="settings_voice">set_voice</string>
+    <string name="settings_vibro">set_vibro</string>
+    <string name="vibro_descr">If this option is enabled, your phone will countdown vibrate when there is 5 seconds left on timer</string>
+    <string name="voice_descr">If this option is enabled, your phone will countdown by voice when there is 5 seconds left on timer</string>
+    <string name="loading">Loading</string>
+    <string name="settings">settings</string>
+    <string name="timer">Timer</string>
+    <string name="no_files">No files for play. Please turn off and on voice option in settings</string>
 </resources>

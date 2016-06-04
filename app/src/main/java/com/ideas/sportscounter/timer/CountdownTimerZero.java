@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.ideas.sportscounter;
+package com.ideas.sportscounter.timer;
 
 import android.os.Handler;
 import android.os.Message;
@@ -129,7 +129,6 @@ public abstract class CountdownTimerZero {
                 final long millisLeft = mStopTimeInFuture - SystemClock.elapsedRealtime();
 
                 if (millisLeft <= 0) {
-                    onTick(0);
                     onFinish();
                 }  else {
                     long lastTickStart = SystemClock.elapsedRealtime();

@@ -1,4 +1,4 @@
-package com.ideas.sportscounter;
+package com.ideas.sportscounter.timer;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -10,6 +10,8 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import com.ideas.sportscounter.R;
 
 public class TimePicker {
 

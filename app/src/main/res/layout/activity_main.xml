@@ -17,12 +17,18 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingBottom="@dimen/activity_vertical_margin"
-        android:paddingLeft="@dimen/activity_horizontal_margin"
-        android:paddingRight="@dimen/activity_horizontal_margin"
-        android:paddingTop="@dimen/activity_vertical_margin"
-        tools:context="com.ideas.sportscounter.MainActivity">
+        tools:context="com.ideas.sportscounter.timer.MainActivity">
 
+        <android.support.v7.widget.Toolbar
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/toolbar_height"
+            app:title="@string/timer"
+            android:id="@+id/toolbar"/>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/toolbar">
         <RelativeLayout
             android:id="@+id/mainContainer"
             android:layout_width="wrap_content"
@@ -83,18 +89,36 @@
                 android:textColor="@color/colorPrimaryDark"
                 android:textSize="48sp"
                 bind:onClick="@{main.timerStarted? main::stopCount : main::startCount}"
-                android:text="@{main.startButtonText}" />
+                android:text="@{main.startButtonText}"
+                tools:text="@string/start"/>
         </RelativeLayout>
 
-        <ImageButton
-            android:id="@+id/clear"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_centerHorizontal="true"
-            android:background="@null"
-            bind:onClick="@{main::clearSets}"
-            app:srcCompat="@drawable/ic_close_black_24dp" />
+            <ImageButton
+                android:id="@+id/clear"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="16dp"
+                android:layout_marginRight="16dp"
+                android:background="@null"
+                app:srcCompat="@drawable/ic_close_black_24dp"
+                bind:onClick="@{main::clearSets}"
+                android:adjustViewBounds="false"/>
 
+            <android.support.design.widget.FloatingActionButton
+                android:src="@drawable/ic_add_black_24dp"
+                android:background="@color/colorPrimary"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                app:fabSize="normal"
+                android:layout_alignParentBottom="true"
+                android:layout_alignRight="@+id/clear"
+                android:layout_alignEnd="@+id/clear"
+                android:layout_marginBottom="24dp"
+                android:id="@+id/floatingActionButton"/>
+
+        </RelativeLayout>
     </RelativeLayout>
 </layout>

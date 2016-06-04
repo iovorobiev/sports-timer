@@ -1,4 +1,4 @@
-package com.ideas.sportscounter;
+package com.ideas.sportscounter.timer;
 
 import android.databinding.BindingAdapter;
 import android.support.annotation.StringRes;
