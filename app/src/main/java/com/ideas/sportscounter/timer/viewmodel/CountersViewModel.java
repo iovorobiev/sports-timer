@@ -1,18 +1,26 @@
-package com.ideas.sportscounter.viewmodel;
+package com.ideas.sportscounter.timer.viewmodel;
 
 import android.databinding.BaseObservable;
 import android.databinding.Bindable;
 import com.ideas.sportscounter.BR;
+import com.ideas.sportscounter.utils.SessionPreferences;
 
 public class CountersViewModel extends BaseObservable {
     private static final int MAX_VALUE = 99;
     private static final int SECONDS_IN_MINUTE = 60;
     static final float MILLIS_IN_SECOND = 1000;
+    private final SessionPreferences preferences;
     private int stateMinutes;
     private int stateSeconds;
     private int minutes;
     private int seconds;
     private int setNumber;
+
+    public CountersViewModel(SessionPreferences preferences) {
+        this.preferences = preferences;
+        setMillis(preferences.getLastTimeMillis());
+        saveState();
+    }
 
     @Bindable
     public String getMinutes() {
@@ -59,10 +67,10 @@ public class CountersViewModel extends BaseObservable {
 
     void setMillis(long millis) {
         setMinutes(0);
-        setSeconds(Math.round(millis / MILLIS_IN_SECOND) - 1);
+        setSeconds(Math.round(millis / MILLIS_IN_SECOND));
     }
 
-    long getMillis() {
+    public long getMillis() {
         return (long) ((minutes * SECONDS_IN_MINUTE + seconds) * MILLIS_IN_SECOND);
     }
 
@@ -79,6 +87,7 @@ public class CountersViewModel extends BaseObservable {
     private void saveState() {
         stateMinutes = minutes;
         stateSeconds = seconds;
+        preferences.putLastTimeMillis(getMillis());
     }
 
     void restorePrevious() {

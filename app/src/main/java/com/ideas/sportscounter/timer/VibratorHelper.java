@@ -2,9 +2,8 @@ package com.ideas.sportscounter.timer;
 
 import android.content.Context;
 import android.os.Vibrator;
-import android.preference.PreferenceManager;
 
-import com.ideas.sportscounter.R;
+import com.ideas.sportscounter.utils.SettingsPreferences;
 
 public class VibratorHelper {
     private static final int VIBRATION_PERIOD = 200;
@@ -12,16 +11,17 @@ public class VibratorHelper {
 
     private long[] finalPattern = {0, 100, 100, 100};
     private boolean enabled;
+    private SettingsPreferences preferences;
 
     private Vibrator vibrator;
 
     VibratorHelper(Context context) {
         vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
+        preferences = new SettingsPreferences(context);
     }
 
-    void initEnabled(Context context) {
-        enabled = PreferenceManager.getDefaultSharedPreferences(context).getBoolean(context
-                .getString(R.string.settings_vibro), false);
+    void initEnabled() {
+        enabled = preferences.isVibroEnabled();
     }
 
     public void vibrate(float seconds) {

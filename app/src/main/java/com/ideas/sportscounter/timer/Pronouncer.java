@@ -1,17 +1,18 @@
 package com.ideas.sportscounter.timer;
 
 import android.content.Context;
-import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
-import android.preference.PreferenceManager;
 import android.speech.tts.TextToSpeech;
-import android.support.v4.content.FileProvider;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.ideas.sportscounter.R;
 import com.ideas.sportscounter.utils.FileUtils;
+import com.ideas.sportscounter.utils.SettingsPreferences;
+
+import org.w3c.dom.Text;
 
 import java.io.File;
 import java.io.IOException;
@@ -26,17 +27,16 @@ public class Pronouncer implements TextToSpeech.OnInitListener {
     private boolean enabled;
     private Context context;
     private final MediaPlayer[] mediaPlayer = new MediaPlayer[PRONOUNCE_TIME + 1];
+    private final SettingsPreferences preferences;
 
     public Pronouncer(Context context, String goString) {
         this.goString = goString;
         this.context = context;
-
-        initEnabled(context);
+        preferences = new SettingsPreferences(context);
     }
 
-    public void initEnabled(Context context) {
-        enabled = PreferenceManager.getDefaultSharedPreferences(context).getBoolean(context
-                .getString(R.string.settings_voice), false);
+    void initEnabled() {
+        enabled = preferences.isVoiceEnabled();
         if (enabled) {
             initMediaPlayers();
         }
@@ -46,8 +46,7 @@ public class Pronouncer implements TextToSpeech.OnInitListener {
         try {
             for (int i = 0; i < mediaPlayer.length; i++) {
                 if (mediaPlayer[i] == null) {
-                    mediaPlayer[i] = initMediaPlayer(context, Uri.parse(FileUtils.getWavFilePath
-                            (context, getStringFromSeconds(i))));
+                    mediaPlayer[i] = initMediaPlayer(context, FileUtils.getWavFilePath(context, getStringFromSeconds(i)));
                 }
             }
         } catch (IOException e) {
@@ -56,15 +55,16 @@ public class Pronouncer implements TextToSpeech.OnInitListener {
 
     }
 
-    private MediaPlayer initMediaPlayer(Context context, Uri uri) throws IOException {
+    private MediaPlayer initMediaPlayer(Context context, String uri) throws IOException {
         MediaPlayer player = new MediaPlayer();
+        Log.d("Sports", uri);
         player.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
             @Override
             public void onPrepared(MediaPlayer mp) {
                 // no implementation
             }
         });
-        player.setDataSource(context, uri);
+        player.setDataSource(uri);
         player.prepareAsync();
         player.seekTo(0);
         return player;
@@ -102,28 +102,22 @@ public class Pronouncer implements TextToSpeech.OnInitListener {
         return Integer.toString(seconds);
     }
 
-    public void setEnabled(Context context, boolean enabled) {
-        this.enabled = enabled;
-    }
-
     public void createFiles() {
-        HashMap<String, String> hashRender = new HashMap<>();
         String path;
         File file;
         for (int i = 1; i <= PRONOUNCE_TIME; i++) {
             String text = Integer.toString(i);
-            hashRender.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, text);
             path = FileUtils.getWavFilePath(context, text);
             file = new File(path);
             if (!file.exists()) {
-                generateFile(hashRender, text, file);
+                generateFile(text, file);
             }
+
         }
-        hashRender.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, goString);
         path = FileUtils.getWavFilePath(context, goString);
         file = new File(path);
         if (!file.exists()) {
-            generateFile(hashRender, goString, file);
+            generateFile(goString, file);
         }
     }
 
@@ -132,32 +126,22 @@ public class Pronouncer implements TextToSpeech.OnInitListener {
     public void onInit(int status) {
         if (status == TextToSpeech.SUCCESS) {
             textToSpeech.setLanguage(Locale.US);
-
-            addSpeech(goString);
-            for (int i = 1; i <= PRONOUNCE_TIME; i++) {
-                addSpeech(Integer.toString(i));
-            }
             if (initFinishedListener != null) {
                 initFinishedListener.onInitFinished();
             }
         }
     }
 
-    private void addSpeech(String text) {
-        File goFile = new File(FileUtils.getWavFilePath(context, text));
-        if (!goFile.exists()) {
-            enabled = false;
-            Toast.makeText(context, R.string.no_files, Toast.LENGTH_LONG).show();
-        }
-    }
-
     @SuppressWarnings("deprecation")
-    private void generateFile(HashMap<String, String> renderer, String text, File file) {
-
+    private void generateFile(String text, File file) {
+        int result;
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
-            textToSpeech.synthesizeToFile(text, null, file, text);
+            result = textToSpeech.synthesizeToFile(text, null, file, text);
         } else {
-            textToSpeech.synthesizeToFile(text, renderer, file.getAbsolutePath());
+            result = textToSpeech.synthesizeToFile(text, null, file.getAbsolutePath());
+        }
+        if (result != TextToSpeech.SUCCESS) {
+            Log.d("Sports", "result is " + result);
         }
     }
 

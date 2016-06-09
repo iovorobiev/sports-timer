@@ -1,4 +1,4 @@
-package com.ideas.sportscounter.viewmodel;
+package com.ideas.sportscounter.timer.viewmodel;
 
 import android.databinding.BaseObservable;
 import android.databinding.Bindable;
@@ -22,8 +22,9 @@ public class MainScreenViewModel extends BaseObservable {
     private int startButtonText = R.string.start;
     private boolean setsBlocked;
 
-    public MainScreenViewModel(CountersViewModel model, VibratorHelper vibratorHelper, Pronouncer
-     pronouncer                          ) {
+    public MainScreenViewModel(CountersViewModel model,
+                               VibratorHelper vibratorHelper,
+                               Pronouncer pronouncer) {
         countersModel = model;
         this.vibratorHelper = vibratorHelper;
         this.pronouncer = pronouncer;
@@ -77,7 +78,7 @@ public class MainScreenViewModel extends BaseObservable {
         timer = new CountdownTimerZero(countersModel.getMillis(), (long) CountersViewModel.MILLIS_IN_SECOND) {
             @Override
             public void onTick(long millisUntilFinished) {
-                countersModel.setMillis(millisUntilFinished);
+                countersModel.setMillis((long) (millisUntilFinished - CountersViewModel.MILLIS_IN_SECOND));
                 float seconds = millisUntilFinished / CountersViewModel.MILLIS_IN_SECOND;
                 vibratorHelper.vibrate((float) Math.floor(seconds));
                 pronouncer.speakSeconds((int) Math.floor(seconds));

@@ -8,10 +8,10 @@
         <import type="com.ideas.sportscounter.R" />
         <variable
             name="counters"
-            type="com.ideas.sportscounter.viewmodel.CountersViewModel" />
+            type="com.ideas.sportscounter.timer.viewmodel.CountersViewModel" />
         <variable
             name="main"
-            type="com.ideas.sportscounter.viewmodel.MainScreenViewModel" />
+            type="com.ideas.sportscounter.timer.viewmodel.MainScreenViewModel" />
     </data>
 
     <RelativeLayout

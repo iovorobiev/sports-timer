@@ -5,43 +5,46 @@ import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import com.ideas.sportscounter.R;
 import com.ideas.sportscounter.databinding.ActivityMainBinding;
 import com.ideas.sportscounter.settings.SettingsActivity;
-import com.ideas.sportscounter.viewmodel.CountersViewModel;
-import com.ideas.sportscounter.viewmodel.MainScreenViewModel;
+import com.ideas.sportscounter.utils.SessionPreferences;
+import com.ideas.sportscounter.timer.viewmodel.CountersViewModel;
+import com.ideas.sportscounter.timer.viewmodel.MainScreenViewModel;
 
 public class MainActivity extends AppCompatActivity {
-
     private Pronouncer pronouncer;
     private VibratorHelper vibratorHelper;
     private MainScreenViewModel mainModel;
+    private CountersViewModel countersViewModel;
 
-    //TODO: use dagger to inject pronouncer/vibrator
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         vibratorHelper = new VibratorHelper(this);
         pronouncer = new Pronouncer(this, getString(R.string.go));
-        CountersViewModel countersViewModel = new CountersViewModel();
+
+        SessionPreferences preferences = new SessionPreferences(this);
+        countersViewModel = new CountersViewModel(preferences);
         mainModel = new MainScreenViewModel(countersViewModel,
                 vibratorHelper, pronouncer);
+
         ActivityMainBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
         binding.setMain(mainModel);
         binding.setCounters(countersViewModel);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        pronouncer.initEnabled(this);
-        vibratorHelper.initEnabled(this);
+        pronouncer.initEnabled();
+        vibratorHelper.initEnabled();
     }
 
     @Override
@@ -49,6 +52,11 @@ public class MainActivity extends AppCompatActivity {
         super.onPause();
         pronouncer.destroyTextToSpeech();
         mainModel.stopCount();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
     }
 
     @Override
