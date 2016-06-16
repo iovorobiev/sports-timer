@@ -1,10 +1,12 @@
-package com.ideas.sportscounter;
+package com.ideas.sportscounter.utils;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
+
+import com.ideas.sportscounter.R;
 
 public class WindowUtils {
     public static Dialog showLoaderDialog(Context context) {

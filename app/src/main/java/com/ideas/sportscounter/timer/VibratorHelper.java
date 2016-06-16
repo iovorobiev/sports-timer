@@ -24,7 +24,7 @@ public class VibratorHelper {
         enabled = preferences.isVibroEnabled();
     }
 
-    public void vibrate(float seconds) {
+    public void vibrate(int seconds) {
         if (!enabled) {
             return;
         }

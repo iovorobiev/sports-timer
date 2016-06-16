@@ -2,22 +2,23 @@ package com.ideas.sportscounter.timer;
 
 import android.content.Context;
 import android.media.MediaPlayer;
-import android.net.Uri;
 import android.os.Build;
 import android.speech.tts.TextToSpeech;
+import android.speech.tts.UtteranceProgressListener;
 import android.util.Log;
-import android.widget.Toast;
+import android.util.Pair;
 
-import com.ideas.sportscounter.R;
 import com.ideas.sportscounter.utils.FileUtils;
 import com.ideas.sportscounter.utils.SettingsPreferences;
 
-import org.w3c.dom.Text;
-
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Locale;
+
+import timber.log.Timber;
 
 public class Pronouncer implements TextToSpeech.OnInitListener {
     private static final int PRONOUNCE_TIME = 5;
@@ -103,22 +104,49 @@ public class Pronouncer implements TextToSpeech.OnInitListener {
     }
 
     public void createFiles() {
-        String path;
-        File file;
+        final List<Pair<String, String>> paths = new LinkedList<>();
         for (int i = 1; i <= PRONOUNCE_TIME; i++) {
             String text = Integer.toString(i);
-            path = FileUtils.getWavFilePath(context, text);
-            file = new File(path);
-            if (!file.exists()) {
-                generateFile(text, file);
+            paths.add(new Pair<>(text, FileUtils.getWavFilePath(context, text)));
+        }
+        paths.add(new Pair<>(goString, FileUtils.getWavFilePath(context, goString)));
+        checkAndGenerate(paths);
+        textToSpeech.setOnUtteranceProgressListener(new UtteranceProgressListener() {
+            @Override
+            public void onStart(String utteranceId) {
+                // No implementation
             }
 
+            @Override
+            public void onDone(String utteranceId) {
+                if (paths.isEmpty()) {
+                    //TODO: return listener to hide loading dialog
+                    Timber.d("Done");
+                    if (initFinishedListener != null) {
+                        initFinishedListener.onCreateFinished();
+                    }
+                    return;
+                }
+                Timber.d("Rest %d", paths.size());
+                checkAndGenerate(paths);
+            }
+
+            @Override
+            public void onError(String utteranceId) {
+                //TODO: add timber, or write custom logs
+                Timber.e(new FileNotFoundException(), "Error on creating");
+            }
+        });
+    }
+
+    private void checkAndGenerate(List<Pair<String, String>> paths) {
+        Pair<String, String> info = paths.get(0);
+        File file = new File(info.second);
+        if (file.exists() && !file.delete()) {
+            Timber.e("Cannot delete file %s", info.second);
         }
-        path = FileUtils.getWavFilePath(context, goString);
-        file = new File(path);
-        if (!file.exists()) {
-            generateFile(goString, file);
-        }
+        generateFile(info.first, file);
+        paths.remove(0);
     }
 
     //TODO: move work with files to util class
@@ -141,11 +169,13 @@ public class Pronouncer implements TextToSpeech.OnInitListener {
             result = textToSpeech.synthesizeToFile(text, null, file.getAbsolutePath());
         }
         if (result != TextToSpeech.SUCCESS) {
-            Log.d("Sports", "result is " + result);
+            Timber.d("result is %d", result);
         }
     }
 
     public interface InitFinishedListener {
         void onInitFinished();
+
+        void onCreateFinished();
     }
 }

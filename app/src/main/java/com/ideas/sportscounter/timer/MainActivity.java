@@ -1,8 +1,12 @@
 package com.ideas.sportscounter.timer;
 
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -11,26 +15,38 @@ import android.view.MenuItem;
 import com.ideas.sportscounter.R;
 import com.ideas.sportscounter.databinding.ActivityMainBinding;
 import com.ideas.sportscounter.settings.SettingsActivity;
-import com.ideas.sportscounter.utils.SessionPreferences;
 import com.ideas.sportscounter.timer.viewmodel.CountersViewModel;
 import com.ideas.sportscounter.timer.viewmodel.MainScreenViewModel;
+import com.ideas.sportscounter.utils.SessionPreferences;
 
 public class MainActivity extends AppCompatActivity {
-    private Pronouncer pronouncer;
-    private VibratorHelper vibratorHelper;
+
     private MainScreenViewModel mainModel;
-    private CountersViewModel countersViewModel;
+    private ServiceConnection timerConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            if (service instanceof TimerService.TimerBinder) {
+                Timer timer = ((TimerService.TimerBinder) service).getService();
+                timer.initAnnouncers();
+                if (mainModel != null) {
+                    mainModel.setTimer(timer);
+                }
+            }
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        vibratorHelper = new VibratorHelper(this);
-        pronouncer = new Pronouncer(this, getString(R.string.go));
 
         SessionPreferences preferences = new SessionPreferences(this);
-        countersViewModel = new CountersViewModel(preferences);
-        mainModel = new MainScreenViewModel(countersViewModel,
-                vibratorHelper, pronouncer);
+        CountersViewModel countersViewModel = new CountersViewModel(preferences);
+        mainModel = new MainScreenViewModel(countersViewModel);
 
         ActivityMainBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         binding.setMain(mainModel);
@@ -43,15 +59,15 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        pronouncer.initEnabled();
-        vibratorHelper.initEnabled();
+        startService(TimerService.getServiceIntent(this));
+        bindService(TimerService.getServiceIntent(this), timerConnection, Context.BIND_AUTO_CREATE);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        pronouncer.destroyTextToSpeech();
-        mainModel.stopCount();
+        unbindService(timerConnection);
+        mainModel.setTimer(null);
     }
 
     @Override

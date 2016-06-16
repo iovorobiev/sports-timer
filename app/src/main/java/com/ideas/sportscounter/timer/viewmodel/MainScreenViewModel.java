@@ -4,17 +4,13 @@ import android.databinding.BaseObservable;
 import android.databinding.Bindable;
 import android.support.annotation.StringRes;
 
-import com.ideas.sportscounter.timer.CountdownTimerZero;
-import com.ideas.sportscounter.timer.Pronouncer;
-import com.ideas.sportscounter.R;
 import com.ideas.sportscounter.BR;
-import com.ideas.sportscounter.timer.VibratorHelper;
+import com.ideas.sportscounter.R;
+import com.ideas.sportscounter.timer.Timer;
+import com.ideas.sportscounter.timer.TimerService;
 
 public class MainScreenViewModel extends BaseObservable {
-    private final VibratorHelper vibratorHelper;
-    private final Pronouncer pronouncer;
-    private CountdownTimerZero timer;
-
+    private Timer timer;
     private boolean timerStated;
 
     private CountersViewModel countersModel;
@@ -22,12 +18,8 @@ public class MainScreenViewModel extends BaseObservable {
     private int startButtonText = R.string.start;
     private boolean setsBlocked;
 
-    public MainScreenViewModel(CountersViewModel model,
-                               VibratorHelper vibratorHelper,
-                               Pronouncer pronouncer) {
+    public MainScreenViewModel(CountersViewModel model) {
         countersModel = model;
-        this.vibratorHelper = vibratorHelper;
-        this.pronouncer = pronouncer;
     }
 
     @Bindable
@@ -41,6 +33,27 @@ public class MainScreenViewModel extends BaseObservable {
         notifyPropertyChanged(BR.startButtonText);
     }
 
+    public void setTimer(Timer timer) {
+        this.timer = timer;
+        if (timer == null) {
+            return;
+        }
+        timer.setUiUpdateListener(new TimerService.UiUpdateListener() {
+            @Override
+            public void onUiUpdate(long millis) {
+                countersModel.setMillis((long) (millis - Timer.MILLIS_IN_SECOND));
+            }
+
+            @Override
+            public void onFinish() {
+                setStartButtonText(R.string.start);
+                countersModel.restorePrevious();
+                setsBlocked = false;
+                setTimerStarted(false);
+            }
+        });
+    }
+
     @Bindable
     public boolean getTimerStarted() {
         return timerStated;
@@ -51,10 +64,11 @@ public class MainScreenViewModel extends BaseObservable {
             countersModel.incSetNumber();
         }
         setsBlocked = true;
-        initTimer();
         setStartButtonText(R.string.stop);
-        timer.start();
-        setTimerStarted(true);
+        if (timer != null) {
+            timer.start(countersModel.getMillis(), (long) Timer.MILLIS_IN_SECOND);
+            setTimerStarted(true);
+        }
     }
 
     private void setTimerStarted(boolean timerStarted) {
@@ -64,7 +78,7 @@ public class MainScreenViewModel extends BaseObservable {
 
     public void stopCount() {
         if (timer != null) {
-            timer.cancel();
+            timer.stop();
         }
         setStartButtonText(R.string.start);
         setTimerStarted(false);
@@ -72,25 +86,5 @@ public class MainScreenViewModel extends BaseObservable {
 
     public void clearSets() {
         countersModel.setSetNumber(0);
-    }
-
-    private void initTimer() {
-        timer = new CountdownTimerZero(countersModel.getMillis(), (long) CountersViewModel.MILLIS_IN_SECOND) {
-            @Override
-            public void onTick(long millisUntilFinished) {
-                countersModel.setMillis((long) (millisUntilFinished - CountersViewModel.MILLIS_IN_SECOND));
-                float seconds = millisUntilFinished / CountersViewModel.MILLIS_IN_SECOND;
-                vibratorHelper.vibrate((float) Math.floor(seconds));
-                pronouncer.speakSeconds((int) Math.floor(seconds));
-            }
-
-            @Override
-            public void onFinish() {
-                setStartButtonText(R.string.start);
-                countersModel.restorePrevious();
-                setsBlocked = false;
-                setTimerStarted(false);
-            }
-        };
     }
 }

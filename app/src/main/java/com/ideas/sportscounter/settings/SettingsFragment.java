@@ -4,15 +4,14 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.speech.tts.TextToSpeech;
 import android.text.TextUtils;
 
 import com.ideas.sportscounter.R;
-import com.ideas.sportscounter.WindowUtils;
 import com.ideas.sportscounter.timer.Pronouncer;
+import com.ideas.sportscounter.utils.WindowUtils;
 
 
 public class SettingsFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener {
@@ -51,12 +50,17 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == TTS_CHECK_CODE) {
             if (resultCode == TextToSpeech.Engine.CHECK_VOICE_DATA_PASS) {
+                final Dialog dialog = WindowUtils.showLoaderDialog(getActivity());
                 pronouncer = new Pronouncer(getActivity(), getString(R.string.go));
                 pronouncer.initTextToSpeech(getActivity(), new Pronouncer.InitFinishedListener() {
                     @Override
                     public void onInitFinished() {
                         pronouncer.createFiles();
+                    }
 
+                    @Override
+                    public void onCreateFinished() {
+                        dialog.cancel();
                     }
                 });
 

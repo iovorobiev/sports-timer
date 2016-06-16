@@ -17,6 +17,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".settings.SettingsActivity"/>
+
+        <service android:name=".timer.TimerService"/>
     </application>
 
 </manifest>

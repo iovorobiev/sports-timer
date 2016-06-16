@@ -2,13 +2,15 @@ package com.ideas.sportscounter.timer.viewmodel;
 
 import android.databinding.BaseObservable;
 import android.databinding.Bindable;
+
 import com.ideas.sportscounter.BR;
 import com.ideas.sportscounter.utils.SessionPreferences;
+
+import static com.ideas.sportscounter.timer.Timer.MILLIS_IN_SECOND;
 
 public class CountersViewModel extends BaseObservable {
     private static final int MAX_VALUE = 99;
     private static final int SECONDS_IN_MINUTE = 60;
-    static final float MILLIS_IN_SECOND = 1000;
     private final SessionPreferences preferences;
     private int stateMinutes;
     private int stateSeconds;
