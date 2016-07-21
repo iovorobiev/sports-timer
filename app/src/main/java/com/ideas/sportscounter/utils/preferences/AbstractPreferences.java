@@ -1,4 +1,4 @@
-package com.ideas.sportscounter.utils;
+package com.ideas.sportscounter.utils.preferences;
 
 import android.content.Context;
 import android.content.SharedPreferences;

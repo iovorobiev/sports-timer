@@ -3,4 +3,8 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="toolbar_height">56dp</dimen>
+    <dimen name="grid_size_x2">16dp</dimen>
+    <dimen name="grid_size">8dp</dimen>
+    <dimen name="grid_size_half">4dp</dimen>
+    <dimen name="grid_size_x3">24dp</dimen>
 </resources>

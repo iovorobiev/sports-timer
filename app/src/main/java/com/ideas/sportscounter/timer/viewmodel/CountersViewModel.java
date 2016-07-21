@@ -2,15 +2,16 @@ package com.ideas.sportscounter.timer.viewmodel;
 
 import android.databinding.BaseObservable;
 import android.databinding.Bindable;
+import android.util.Pair;
 
 import com.ideas.sportscounter.BR;
-import com.ideas.sportscounter.utils.SessionPreferences;
+import com.ideas.sportscounter.utils.TimeFormatUtils;
+import com.ideas.sportscounter.utils.preferences.SessionPreferences;
 
 import static com.ideas.sportscounter.timer.Timer.MILLIS_IN_SECOND;
 
 public class CountersViewModel extends BaseObservable {
-    private static final int MAX_VALUE = 99;
-    private static final int SECONDS_IN_MINUTE = 60;
+
     private final SessionPreferences preferences;
     private int stateMinutes;
     private int stateSeconds;
@@ -26,22 +27,12 @@ public class CountersViewModel extends BaseObservable {
 
     @Bindable
     public String getMinutes() {
-        return getTimeStringFromInt(minutes);
-    }
-
-    private String getTimeStringFromInt(int time) {
-        String timeString;
-        if (time < 10) {
-            timeString = "0" + time;
-        } else  {
-            timeString = Integer.toString(time);
-        }
-        return timeString;
+        return TimeFormatUtils.getTimeStringFromInt(minutes);
     }
 
     @Bindable
     public String getSeconds() {
-        return getTimeStringFromInt(seconds);
+        return TimeFormatUtils.getTimeStringFromInt(seconds);
     }
 
     @Bindable
@@ -50,20 +41,16 @@ public class CountersViewModel extends BaseObservable {
     }
 
     private void setMinutes(int minutes) {
-        if (minutes <= MAX_VALUE) {
-            this.minutes = minutes;
-        } else {
-            this.minutes = MAX_VALUE;
-        }
+        this.minutes = TimeFormatUtils.getMinutesValue(minutes);
         notifyPropertyChanged(BR.minutes);
     }
 
     private void setSeconds(int seconds) {
-        this.seconds = seconds % SECONDS_IN_MINUTE;
+        Pair<Integer, Integer> newValues = TimeFormatUtils.getFromSeconds(seconds);
+        this.seconds = newValues.second;
         notifyPropertyChanged(BR.seconds);
-        if (seconds >= SECONDS_IN_MINUTE) {
-            int newMinutes = minutes + seconds / SECONDS_IN_MINUTE;
-            setMinutes(newMinutes);
+        if (newValues.first > 0) {
+            setMinutes(newValues.first);
         }
     }
 
@@ -73,7 +60,7 @@ public class CountersViewModel extends BaseObservable {
     }
 
     public long getMillis() {
-        return (long) ((minutes * SECONDS_IN_MINUTE + seconds) * MILLIS_IN_SECOND);
+        return TimeFormatUtils.getMillisFromMinsAndSecs(minutes, seconds);
     }
 
     void setSetNumber(int setNumber) {

@@ -9,7 +9,7 @@ import android.util.Log;
 import android.util.Pair;
 
 import com.ideas.sportscounter.utils.FileUtils;
-import com.ideas.sportscounter.utils.SettingsPreferences;
+import com.ideas.sportscounter.utils.preferences.SettingsPreferences;
 
 import java.io.File;
 import java.io.FileNotFoundException;

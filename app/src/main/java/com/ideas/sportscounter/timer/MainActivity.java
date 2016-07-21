@@ -17,7 +17,7 @@ import com.ideas.sportscounter.databinding.ActivityMainBinding;
 import com.ideas.sportscounter.settings.SettingsActivity;
 import com.ideas.sportscounter.timer.viewmodel.CountersViewModel;
 import com.ideas.sportscounter.timer.viewmodel.MainScreenViewModel;
-import com.ideas.sportscounter.utils.SessionPreferences;
+import com.ideas.sportscounter.utils.preferences.SessionPreferences;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
 
         SessionPreferences preferences = new SessionPreferences(this);
         CountersViewModel countersViewModel = new CountersViewModel(preferences);
-        mainModel = new MainScreenViewModel(countersViewModel);
+        mainModel = new MainScreenViewModel(this, countersViewModel);
 
         ActivityMainBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         binding.setMain(mainModel);

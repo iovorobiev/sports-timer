@@ -9,14 +9,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.ideas.sportscounter.R;
+import com.ideas.sportscounter.core.Injector;
 
 public class TimePicker {
 
-    static void pickTime(final Context context, @StringRes int res,
-                  final OnTimeChosedListener timeChosedListener) {
+    public static void pickTime(final Context context, @StringRes int res,
+                                final OnTimeChosedListener timeChosedListener) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         final View pickView = LayoutInflater.from(context).inflate(R.layout.time_chooser, null);
         builder.setView(pickView);
@@ -42,7 +42,7 @@ public class TimePicker {
                     return;
                 }
                 if (!TextUtils.isDigitsOnly(result)) {
-                    Toast.makeText(context, R.string.dig_only, Toast.LENGTH_LONG).show();
+                    Injector.forApp(context).notifier().notifyWith(R.string.dig_only);
                     return;
                 }
                 int resultTime = Integer.parseInt(result);

@@ -15,6 +15,16 @@
         <item name="android:layout_margin">4dp</item>
     </style>
 
+    <style name="MediumText">
+        <item name="android:textSize">18sp</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
+
+    <style name="LargeText">
+        <item name="android:textSize">24sp</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
+
     <style name="ToolbarStyle" parent="Widget.AppCompat.Toolbar">
         <item name="popupTheme">@style/ThemeOverlay.AppCompat.Light</item>
         <item name="android:background">@color/colorPrimary</item>

@@ -3,7 +3,7 @@ package com.ideas.sportscounter.timer;
 import android.content.Context;
 import android.os.Vibrator;
 
-import com.ideas.sportscounter.utils.SettingsPreferences;
+import com.ideas.sportscounter.utils.preferences.SettingsPreferences;
 
 public class VibratorHelper {
     private static final int VIBRATION_PERIOD = 200;

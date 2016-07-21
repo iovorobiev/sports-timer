@@ -1,15 +1,19 @@
 package com.ideas.sportscounter.timer.viewmodel;
 
+import android.content.Context;
+import android.content.Intent;
 import android.databinding.BaseObservable;
 import android.databinding.Bindable;
 import android.support.annotation.StringRes;
 
 import com.ideas.sportscounter.BR;
 import com.ideas.sportscounter.R;
+import com.ideas.sportscounter.exercises.create.ExCreateActivity;
 import com.ideas.sportscounter.timer.Timer;
 import com.ideas.sportscounter.timer.TimerService;
 
 public class MainScreenViewModel extends BaseObservable {
+    private final Context context;
     private Timer timer;
     private boolean timerStated;
 
@@ -18,7 +22,8 @@ public class MainScreenViewModel extends BaseObservable {
     private int startButtonText = R.string.start;
     private boolean setsBlocked;
 
-    public MainScreenViewModel(CountersViewModel model) {
+    public MainScreenViewModel(Context context, CountersViewModel model) {
+        this.context = context;
         countersModel = model;
     }
 
@@ -86,5 +91,9 @@ public class MainScreenViewModel extends BaseObservable {
 
     public void clearSets() {
         countersModel.setSetNumber(0);
+    }
+
+    public void openCreateTraining() {
+        context.startActivity(new Intent(context, ExCreateActivity.class));
     }
 }
