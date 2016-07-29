@@ -31,11 +31,11 @@ public class ExCreationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         headerModel = new ExerciseHeaderModel(notifier, new OnItemsAddedListener() {
             @Override
             public void addItems(int setsCount, int times) {
+                int prevSize = 0;
                 for (int i = 0; i < setsCount; i++) {
                     sets.add(new CreateSetVM(notifier, String.format(setTitlePattern, i + 1), times));
-//                    notifyItemChanged(sets.size());
+                    notifyItemInserted(sets.size());
                 }
-                notifyDataSetChanged();
             }
         });
     }
